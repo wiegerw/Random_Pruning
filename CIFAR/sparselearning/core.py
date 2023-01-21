@@ -1,7 +1,6 @@
 from __future__ import print_function
 import torch
 import torch.nn as nn
-import torch.optim as optim
 from sparselearning.snip import SNIP, GraSP
 import numpy as np
 import math
@@ -17,33 +16,6 @@ def add_sparse_args(parser):
     parser.add_argument('--density', type=float, default=0.05, help='The density of the overall sparse network.')
     parser.add_argument('--update_frequency', type=int, default=100, metavar='N', help='how many iterations to train between parameter exploration')
     parser.add_argument('--decay-schedule', type=str, default='cosine', help='The decay schedule for the pruning rate. Default: cosine. Choose from: cosine, linear.')
-
-
-class CosineDecay(object):
-    def __init__(self, death_rate, T_max, eta_min=0.005, last_epoch=-1):
-        self.sgd = optim.SGD(torch.nn.ParameterList([torch.nn.Parameter(torch.zeros(1))]), lr=death_rate)
-        self.cosine_stepper = torch.optim.lr_scheduler.CosineAnnealingLR(self.sgd, T_max, eta_min, last_epoch)
-
-    def step(self):
-        self.cosine_stepper.step()
-
-    def get_dr(self):
-        return self.sgd.param_groups[0]['lr']
-
-class LinearDecay(object):
-    def __init__(self, death_rate, factor=0.99, frequency=600):
-        self.factor = factor
-        self.steps = 0
-        self.frequency = frequency
-
-    def step(self):
-        self.steps += 1
-
-    def get_dr(self, death_rate):
-        if self.steps > 0 and self.steps % self.frequency == 0:
-            return death_rate*self.factor
-        else:
-            return death_rate
 
 
 class Masking(object):

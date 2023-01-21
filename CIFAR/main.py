@@ -14,7 +14,8 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 import sparselearning
 from models import cifar_resnet, initializers, vgg
-from sparselearning.core import Masking, CosineDecay
+from sparselearning.core import Masking
+from sparselearning.decay import CosineDecay
 from sparselearning.utils import get_mnist_dataloaders, get_cifar10_dataloaders, get_cifar100_dataloaders, \
     plot_class_feature_histograms
 
